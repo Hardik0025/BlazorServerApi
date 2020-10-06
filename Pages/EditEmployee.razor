@@ -1,0 +1,59 @@
+﻿@page "/EditEmployee/{id}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Edit Employee</h3>
+<hr />
+<EditForm Model="@empModel">
+    <form>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <InputText id="name" @bind-Value="@empModel.Name" class="form-control" placeholder="Name"></InputText>
+                </div>
+                <div class="form-group">
+                    <InputText id="dept" @bind-Value="@empModel.Department" class="form-control" placeholder="Department"></InputText>
+                </div>
+                <div class="form-group">
+                    <InputText id="desig" @bind-Value="@empModel.Designation" class="form-control" placeholder="Designation"></InputText>
+                </div>
+                <div class="form-group">
+                    <InputText id="company" @bind-Value="@empModel.Company" class="form-control" placeholder="Company"></InputText>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" @onclick="@UpdateEmployee" value="Update" />
+                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+                </div>
+            </div>
+        </div>
+    </form>
+</EditForm>
+@code 
+{
+        [Parameter]
+        public string Id { get; set; }
+        EmployeeModel empModel = new EmployeeModel();
+
+        protected override async Task OnInitializedAsync()
+        {
+            empModel = await Http.GetJsonAsync<EmployeeModel>($"https://localhost:44324/api/employees/getbyid/" + Id);
+        }
+        protected void UpdateEmployee ()
+    {
+        //Update using API
+        //EmployeeInfo empInfo = new EmployeeInfo(empModel.Id,empModel.Name,empModel.Department,empModel.Designation,empModel.Company);
+
+        Http.PutJsonAsync("https://localhost:44324/api/employees/updateEmp", empModel);
+
+        NavigationManager.NavigateTo("ListEmployee");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListEmployee");
+    }
+}

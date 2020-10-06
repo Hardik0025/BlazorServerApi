@@ -1,0 +1,51 @@
+﻿@page "/EditStudent/{id}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>EditStudent</h3>
+<EditForm Model="@stdObject">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <InputText id="name" @bind-Value="@stdObject.StudentName" class="form-control" placeholder="Name"></InputText>
+            </div>
+            <div class="form-group">
+                <input id="totalMarks" name="age" @bind-value="@stdObject.TotalMarks" class="form-control" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-danger" @onclick="@UpdateStudent" value="Save" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    StudentInfo stdObject = new StudentInfo();
+
+    protected override async Task OnInitializedAsync()
+    {
+        stdObject = await Http.GetJsonAsync<StudentInfo>("https://localhost:44324/api/students/getbyid/" + Id);
+    }
+    protected void UpdateStudent()
+    {
+        //Update using API
+        //EmployeeInfo empInfo = new EmployeeInfo(empModel.Id,empModel.Name,empModel.Department,empModel.Designation,empModel.Company);
+
+        Http.PutJsonAsync("https://localhost:44324/api/students/updateStudent", stdObject);
+
+        NavigationManager.NavigateTo("ListStudent");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListStudent");
+    }
+}

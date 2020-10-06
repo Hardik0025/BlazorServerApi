@@ -1,0 +1,52 @@
+﻿@page "/ListEmployee"
+@inject HttpClient Http
+
+<div>
+    <a class="nav-link oi oi-plus btn btn-success" href="AddEmployee">Add Employee</a>
+</div>
+
+<h3>List Employee</h3>
+
+@if (empModel == null)
+{
+    <p><em>Loading....</em></p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Designation</th>
+                <th>Company</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var emp in empModel)
+            {
+                <tr>
+                    <td>@emp.Name</td>
+                    <td>@emp.Department</td>
+                    <td>@emp.Designation</td>
+                    <td>@emp.Company</td>
+                    <td>
+                        <a class="nav-link oi oi-pencil btn btn-dark" href="EditEmployee/@emp.Id"> Edit</a>
+                        <a class="nav-link oi oi-trash btn btn-danger" href="DeleteEmployee/@emp.Id"> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    IEnumerable<EmployeeModel> empModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        empModel = await Http.GetJsonAsync<EmployeeModel[]>("https://localhost:44324/api/employees");
+    }
+}

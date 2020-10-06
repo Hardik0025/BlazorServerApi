@@ -1,0 +1,45 @@
+﻿@page "/ListStudent"
+@inject HttpClient Http
+
+<div><a class="nav-link oi oi-plus btn btn-success" href="AddStudent">Add Student</a></div>
+
+<h3>ListStudent</h3>
+
+@if (objStudent == null)
+{
+    <p><em>Loading....</em></p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>StudentName</th>
+                <th>Total Marks</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var stud in objStudent)
+            {
+                <tr>
+                    <td>@stud.StudentName</td>
+                    <td>@stud.TotalMarks</td>
+                    <td>
+                        <a class="nav-link oi oi-pencil btn btn-dark" href="EditStudent/@stud.StudID"> Edit</a>
+                        <a class="nav-link oi oi-trash btn btn-danger" href="DeleteStudent/@stud.StudID"> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    IEnumerable<StudentInfo> objStudent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        objStudent = await Http.GetJsonAsync<StudentInfo[]>("https://localhost:44324/api/students");
+    }
+
+}

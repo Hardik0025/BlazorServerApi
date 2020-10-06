@@ -1,0 +1,55 @@
+﻿@page "/ListCustomer"
+@inject HttpClient Http
+
+
+<div>
+    <a class="nav-link oi oi-plus btn btn-success" href="AddCustomer"> Add Customer</a>
+</div>
+
+<h3>Customer Information</h3>
+
+@if (custModel == null)
+{
+    <p><em>Loading....</em></p>
+}
+else
+{
+    <table class="table table-bordered table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Company</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cust in custModel)
+            {
+                <tr>
+                    <td>@cust.Name</td>
+                    <td>@cust.Age</td>
+                    <td>@cust.Company</td>
+                    <td>@cust.Email</td>
+                    <td>@cust.Phone</td>
+                    <td>@cust.Address</td>
+                    <td>
+                        <a class="nav-link oi oi-pencil btn btn-dark" href="EditCustomer/@cust.CustID"> Edit</a>
+                        <a class="nav-link oi oi-trash btn btn-danger" href="DeleteCustomer/@cust.CustID"> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    IEnumerable<CustomerInfo> custModel;
+
+    protected override async Task OnInitializedAsync()
+    {
+        custModel = await Http.GetJsonAsync<CustomerInfo[]>("https://localhost:44324/api/customers");
+    }
+}

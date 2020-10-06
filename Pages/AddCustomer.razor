@@ -1,0 +1,57 @@
+﻿@page "/AddCustomer"
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<h3>Add Customer</h3>
+
+<EditForm Model="@objCustomer">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <InputText id="name" @bind-Value="@objCustomer.Name" class="form-control" placeholder="Name"></InputText>
+            </div>
+            <div class="form-group">
+                <InputNumber id="age" name="age" @bind-Value="@objCustomer.Age" class="form-control" placeholder="Age" />
+            </div>
+            <div class="form-group">
+                <InputText id="copmany" @bind-Value="@objCustomer.Company" class="form-control" placeholder="Company"></InputText>
+            </div>
+            <div class="form-group">
+                <InputText id="email" @bind-Value="@objCustomer.Email" class="form-control" placeholder="Email"></InputText>
+            </div>
+            <div class="form-group">
+                <InputText id="phone" @bind-Value="@objCustomer.Phone" class="form-control" placeholder="Phone"></InputText>
+            </div>
+            <div class="form-group">
+                <InputText id="address" @bind-Value="@objCustomer.Address" class="form-control" placeholder="Address"></InputText>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="button" class="btn btn-danger" @onclick="@CreateCustomer" value="Save" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    CustomerInfo objCustomer = new CustomerInfo();
+
+    protected void CreateCustomer()
+    {
+        //Add Using API
+        HttpClient.PostJsonAsync("https://localhost:44324/api/Customers", objCustomer);
+
+        NavigationManager.NavigateTo("ListCustomer");
+    }
+
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListCustomer");
+    }
+}

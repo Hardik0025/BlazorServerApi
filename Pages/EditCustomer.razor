@@ -1,0 +1,65 @@
+﻿@page "/EditCustomer/{id}"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<h3>Edit Customer</h3>
+<hr />
+<EditForm Model="@custModel">
+    <form>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <InputText id="name" @bind-Value="@custModel.Name" class="form-control" placeholder="Name"></InputText>
+                </div>
+                <div class="form-group">
+                    <InputNumber id="age" @bind-Value="@custModel.Age" class="form-control" placeholder="Age"></InputNumber>
+                </div>
+                <div class="form-group">
+                    <InputText id="company" @bind-Value="@custModel.Company" class="form-control" placeholder="Company"></InputText>
+                </div>
+                <div class="form-group">
+                    <InputText id="email" @bind-Value="@custModel.Email" class="form-control" placeholder="Email"></InputText>
+                </div>
+                <div class="form-group">
+                    <InputText id="phone" @bind-Value="@custModel.Phone" class="form-control" placeholder="Phone"></InputText>
+                </div>
+                <div class="form-group">
+                    <InputText id="address" @bind-Value="@custModel.Address" class="form-control" placeholder="Address"></InputText>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <input type="button" class="btn btn-primary" @onclick="@UpdateCustomer" value="Update" />
+                    <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+                </div>
+            </div>
+        </div>
+    </form>
+</EditForm>
+@code 
+{
+    [Parameter]
+    public string Id { get; set; }
+    CustomerInfo custModel = new CustomerInfo();
+
+    protected override async Task OnInitializedAsync()
+    {
+        custModel = await Http.GetJsonAsync<CustomerInfo>("https://localhost:44324/api/customers/getbyid/" + Id);
+    }
+
+    protected void UpdateCustomer()
+    {
+        //CustomerInfo custInfo = new CustomerInfo(custInfo.CustID, custInfo.Name, custInfo.Age, custInfo.Company, custInfo.Email, custInfo.Phone, custInfo.Address);
+        //Update using API
+
+        Http.PutJsonAsync("https://localhost:44324/api/customers/updatecustomer", custModel);
+
+        NavigationManager.NavigateTo("ListCustomer");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListCustomer");
+    }
+}

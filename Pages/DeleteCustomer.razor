@@ -1,0 +1,70 @@
+﻿@page "/DeleteCustomer/{CurrentID}"
+@inject NavigationManager NavigationManager
+@inject HttpClient HttpClient
+
+<h2>Delete Employee</h2>
+<hr />
+<h3>Are you sure want to delete this?</h3>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            <label>Customer ID:</label>
+            <label>@objCustomer.CustID</label>
+        </div>
+        <div class="form-group">
+            <label>Name:</label>
+            <label>@objCustomer.Name</label>
+        </div>
+        <div class="form-group">
+            <label>Age:</label>
+            <label>@objCustomer.Age</label>
+        </div>
+        <div class="form-group">
+            <label>Company:</label>
+            <label>@objCustomer.Company</label>
+        </div>
+        <div class="form-group">
+            <label>Email:</label>
+            <label>@objCustomer.Email</label>
+        </div>
+        <div class="form-group">
+            <label>Email:</label>
+            <label>@objCustomer.Phone</label>
+        </div>
+        <div class="form-group">
+            <label>Email:</label>
+            <label>@objCustomer.Address</label>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <input type="button" class="btn btn-danger" @onclick="@DeleteCustomerInfo" value="Delete" />
+            <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string CurrentID { get; set; }
+    CustomerInfo objCustomer = new CustomerInfo();
+
+    protected override async Task OnInitializedAsync()
+    {
+        objCustomer = await HttpClient.GetJsonAsync<CustomerInfo>("https://localhost:44324/api/customers/getbyid/" + CurrentID);
+    }
+
+    protected void DeleteCustomerInfo()
+    {
+        //Delete using API
+        HttpClient.DeleteAsync("https://localhost:44324/api/customers/deletebyid/" + CurrentID);
+        NavigationManager.NavigateTo("ListCustomer");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListCustomer");
+    }
+}

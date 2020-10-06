@@ -1,0 +1,43 @@
+﻿@page "/AddStudent"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+<h3>AddStudent</h3>
+<EditForm Model="@studInfo" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-md-8">
+            <div class="form-group">
+                <InputText id="name" @bind-Value="@studInfo.StudentName" class="form-control" placeholder="StudentName" required></InputText>
+                <ValidationMessage For="@(() => studInfo.StudentName)" />
+            </div>
+            <div class="form-group">
+                <InputNumber id="age" name="age" @bind-Value="@studInfo.TotalMarks" class="form-control" placeholder="TotalMarks" required></InputNumber>
+                <ValidationMessage For="@(() => studInfo.TotalMarks)" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <input type="submit" class="btn btn-danger" @onclick="@CreateStudent" value="Save" />
+                <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+            </div>
+        </div>
+    </div>
+</EditForm>
+@code {
+    StudentInfo studInfo = new StudentInfo();
+
+    protected void CreateStudent()
+    {
+        Http.PostJsonAsync("https://localhost:44324/api/students", studInfo);
+        NavigationManager.NavigateTo("ListStudent");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListStudent");
+    }
+    protected void HandleValidSubmit()
+    {
+    }
+}

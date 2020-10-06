@@ -1,0 +1,60 @@
+﻿@page "/DeleteEmployee/{CurrentID}"
+@inject NavigationManager NavigationManager
+@inject HttpClient Http
+
+<h3>Delete Employee</h3>
+<hr />
+<h3>Are you sure want to delete this?</h3>
+<div class="row">
+    <div class="col-md-8">
+        <div class="form-group">
+            <label><b>Employee ID:</b></label>
+            <label>@empModel.Id</label>
+        </div>
+        <div class="form-group">
+            <label><b>Name:</b></label>
+            <label>@empModel.Name</label>
+        </div>
+        <div class="form-group">
+            <label><b>Age:</b></label>
+            <label>@empModel.Department</label>
+        </div>
+        <div class="form-group">
+            <label><b>Company:</b></label>
+            <label>@empModel.Designation</label>
+        </div>
+        <div class="form-group">
+            <label><b>Email:</b></label>
+            <label>@empModel.Company</label>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <input type="button" class="btn btn-danger" @onclick="@DeleteEmployeerInfo" value="Delete" />
+            <input type="button" class="btn btn-primary" @onclick="@Cancel" value="Cancel" />
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public string CurrentID { get; set; }
+    EmployeeModel empModel = new EmployeeModel();
+
+    protected override async Task OnInitializedAsync()
+    {
+        empModel = await Http.GetJsonAsync<EmployeeModel>("https://localhost:44324/api/employees/getbyid/" + CurrentID);
+    }
+
+    protected void DeleteEmployeerInfo()
+    {
+        //Delete using API
+        Http.DeleteAsync("https://localhost:44324/api/employees/deletebyid/" + CurrentID);
+        NavigationManager.NavigateTo("ListEmployee");
+    }
+    void Cancel()
+    {
+        NavigationManager.NavigateTo("ListEmployee");
+    }
+}
